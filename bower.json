@@ -1,0 +1,25 @@
+{
+  "name": "COMP392-Asgn2",
+  "authors": [
+    "Douglas Krein <douglaskrein@gmail.com>"
+  ],
+  "description": "COMP392-Asgn2 for Advanced Graphics",
+  "main": "",
+  "moduleType": [],
+  "license": "MIT",
+  "homepage": "https://github.com/DKrein/COMP392-Asgn2",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "Scripts/lib"
+  ],
+  "dependencies": {
+    "three.js": "threejs#*",
+    "dat-gui": "~0.5.1",
+    "stats.js": "*",
+    "threex.colliders": "*"
+  }
+}
