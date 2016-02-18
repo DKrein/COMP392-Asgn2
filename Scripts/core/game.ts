@@ -86,6 +86,7 @@ function init() {
     setupCamera(); 
 	
     // add an axis helper to the scene
+    /*
     axes = new AxisHelper(80);
     scene.add(axes);
     console.log("Added Axis Helper to scene...");
@@ -100,6 +101,7 @@ function init() {
 
     scene.add(plane);
     console.log("Added Plane Primitive to scene...");
+    */
      
     // Add an AmbientLight to the scene
     ambientLight = new AmbientLight(0x090909);
@@ -115,8 +117,11 @@ function init() {
     
     // Add objects to the scene
     //length, height, width - color - front/back, up/down, left/rigth
-    head = new gameObject(new CubeGeometry(4, 3, 4), new LambertMaterial({color: 0xffcc99}), 0, 14, 0);
-    torso = new gameObject(new CubeGeometry(4, 6, 7), new LambertMaterial({color: 0xff6666}), 0, 9, 0);  
+    //head = new gameObject(new SphereGeometry(4, 3, 4), new LambertMaterial({color: 0xffcc99}), 0, 14, 0);
+    
+    head = new THREE.Mesh(new THREE.SphereGeometry(15, 30, 30), new LambertMaterial({color: 0xffcc99}));
+    scene.add(head);
+    /*torso = new gameObject(new CubeGeometry(4, 6, 7), new LambertMaterial({color: 0xff6666}), 0, 9, 0);  
     rightLeg = new gameObject(new CubeGeometry(2, 6, 1), new LambertMaterial({color: 0x6666ff}), 0, 3, 2);
     leftLeg = new gameObject(new CubeGeometry(2, 6, 1), new LambertMaterial({color: 0x6666ff}), 0, 3, -2);
     rightFoot = new gameObject(new CubeGeometry(3, 2, 1), new LambertMaterial({color: 0x000000}), -2, 1, 2);    
@@ -136,7 +141,8 @@ function init() {
     group.add(leftFoot);
     group.add(rightFoot);    
     scene.add(group);
-    console.log("Cubeman added to the scene");
+    console.log("Cubeman added to the scene");*/
+    
     
     // add controls
     defaultColor = "#000000";
@@ -152,8 +158,34 @@ function init() {
     gameLoop(); // render the scene	
     
     window.addEventListener('resize', onResize, false);
+    window.addEventListener( 'mousewheel', mousewheel, false );
+    //this.domElement.addEventListener( 'mousewheel', mousewheel, false );
 }
 
+
+function mousewheel(e) : void {
+        //http://www.javascriptkit.com/javatutors/onmousewheel.shtml
+        
+		e.preventDefault();
+		e.stopPropagation();
+        var delta: number = 0;
+        delta = e.wheelDelta * .02 ;
+        
+	   console.log(delta);
+       //camera.position.y += 10;
+       //if (camera.position.x <= -11)
+        camera.position.x += delta;
+        
+       console.log(camera.position.x);
+       //camera.x += 10;
+       
+		//_zoomStart = _zoomEnd = _this.getMouseOnScreen( event.clientX, event.clientY );
+		
+		//document.addEventListener( 'mousemove', mousemove, false );
+		//document.addEventListener( 'mouseup', mouseup, false );
+
+	}
+    
 // Change the Camera Aspect Ration according to Screen Size changes
 function onResize(): void {
     camera.aspect = window.innerWidth / window.innerHeight;
@@ -163,6 +195,7 @@ function onResize(): void {
 
 function addControl(controlObject: Control): void {
     
+    /*
     // Add Rotation Controls
     gui.add(controlObject,'rotationX',0, 1);
     gui.add(controlObject,'rotationY',0, 1);
@@ -188,7 +221,7 @@ function addControl(controlObject: Control): void {
     gui.addColor(controlObject,'headColor').onChange((color) =>{
        head.material.color = new Color(color);
    });
-   
+   */
      
 }
 
@@ -207,10 +240,12 @@ function gameLoop(): void {
     stats.update();
     
     //group.rotation.set(control.rotationX, control.rotationY, control.rotationZ);
+    
+    /*
     group.rotation.x += control.rotationX;
     group.rotation.y += control.rotationY;
     group.rotation.z += control.rotationZ;
-
+    */
     // render using requestAnimationFrame
     requestAnimationFrame(gameLoop);
 	
@@ -221,19 +256,19 @@ function gameLoop(): void {
 // Setup default renderer
 function setupRenderer(): void {
     renderer = new Renderer();
-    renderer.setClearColor(0xEEEEEE, 1.0);
+    renderer.setClearColor(0x000000, 1.0);
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.shadowMap.enabled = true;
-    console.log("Finished setting up Renderer...");
+    console.log("Finished setting up Renderer... black bg screen");
 }
 
 // Setup main camera for the scene
 function setupCamera(): void {
-    //camera = new PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera = new PerspectiveCamera(85, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.x = -30;
+    camera.position.x = -40;
     camera.position.y = 20;
-    camera.position.z = 5;
+    camera.position.z = 0;
     camera.lookAt(scene.position);
     console.log("Finished setting up Camera...");
 }
+
