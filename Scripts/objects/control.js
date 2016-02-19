@@ -16,23 +16,19 @@ var objects;
     // CONTROL CLASS ++++++++++++++++++++++++++++++++++++++++++
     var Control = (function () {
         // CONSTRUCTOR ++++++++++++++++++++++++++++++++++++++++
-        function Control(defaultColor, group) {
+        function Control(camera) {
             //PUBLIC INSTANCE VARIABLES +++++++++++++++++++++++++++
-            this.rotationX = 0;
-            this.rotationY = 0;
-            this.rotationZ = 0;
-            this.feetColor = defaultColor;
-            this.legsColor = defaultColor;
-            this.armsColor = defaultColor;
-            this.torsoColor = defaultColor;
-            this.headColor = defaultColor;
-            this.group = group;
+            this.zoomInOut = -500;
+            this.moveLeftRight = 0;
+            this.camera = camera;
         }
         //PUBLIC METHODS +++++++++++++++++++++++++++++++++++++++
-        Control.prototype.resetPosition = function () {
-            group.rotation.x = 0;
-            group.rotation.y = 0;
-            group.rotation.z = 0;
+        Control.prototype.resetCamera = function () {
+            this.zoomInOut = -500;
+            this.moveLeftRight = 0;
+            camera.position.x = -500;
+            camera.position.y = 0;
+            camera.position.z = 0;
         };
         return Control;
     })();
