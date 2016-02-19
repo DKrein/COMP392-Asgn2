@@ -72,9 +72,14 @@ var planet4: Mesh;
 var planet5: Mesh;
 var group: Mesh;
 
-var defaultColor:string;
+var speedRotation1: number = 0;
+var speedRotation2: number = 0;
+var speedRotation3: number = 0;
+var speedRotation4: number = 0;
+var speedRotation5: number = 0;
 
 function init() {
+    
     // Instantiate a new Scene object
     scene = new Scene();
     
@@ -85,12 +90,12 @@ function init() {
     setupCamera(); 
 	
     // add an axis helper to the scene
-    /*
     axes = new AxisHelper(80);
     scene.add(axes);
     console.log("Added Axis Helper to scene...");
     
     //Add a Plane to the Scene
+    /*
     plane = new gameObject(
         new PlaneGeometry(40, 80, 1, 1),
         new LambertMaterial({ color: 0xffffff }),
@@ -116,38 +121,39 @@ function init() {
     
     // Add objects to the scene
     //length, height, width - color - front/back, up/down, left/rigth
-    sun = new gameObject(new SphereGeometry(30, 30, 30), new LambertMaterial({color: 0xFFFF00}), 0, 0, 300);
+    sun = new gameObject(new SphereGeometry(30, 30, 30), new LambertMaterial({color: 0xFFFF00}), 0, 0, 0);
+    sun.receiveShadow = false;
+    sun.castShadow = false;
     
-    planet1 = new gameObject(new SphereGeometry(8, 30, 30), new LambertMaterial({color: 0x123123}), 0, 0, -120);
-    planet2 = new gameObject(new SphereGeometry(19, 30, 30), new LambertMaterial({color: 0x321321}), 0, 70, -180);
+    planet1 = new gameObject(new SphereGeometry(8, 30, 30), new LambertMaterial({color: 0x123123}), 0, 0, 0);
+    planet2 = new gameObject(new SphereGeometry(19, 30, 30), new LambertMaterial({color: 0x321321}), 0, 0, 0);
     
-    planet3 = new gameObject(new SphereGeometry(15, 30, 30), new LambertMaterial({color: 0xff6666}), 0, 0, -330);
+    planet3 = new gameObject(new SphereGeometry(15, 30, 30), new LambertMaterial({color: 0xff6666}), 0, 0, 0);
     planet3.rotation.x = .7;
     planet3moon = new gameObject(new SphereGeometry(8, 20, 20), new LambertMaterial({color: 0xff66ff}), 0, 0, 45);
+    planet4 = new gameObject(new SphereGeometry(23, 30, 30), new LambertMaterial({color: 0xff6666}), 0, 0, 0);
+    planet5 = new gameObject(new SphereGeometry(29, 30, 30), new LambertMaterial({color: 0xff6666}), 0, 0, 0);
+    
     planet3.add(planet3moon);
     
-    planet4 = new gameObject(new SphereGeometry(23, 30, 30), new LambertMaterial({color: 0xff6666}), 0, 0, -430);
-    planet5 = new gameObject(new SphereGeometry(29, 30, 30), new LambertMaterial({color: 0xff6666}), 0, -40, -600);
-    
-    sun.add(planet1);
-    sun.add(planet2);
-    sun.add(planet3);
-    sun.add(planet4);
-    sun.add(planet5);
-    
+    scene.add(planet1);
+    scene.add(planet2);
+    scene.add(planet3);
+    scene.add(planet4);
+    scene.add(planet5);
     scene.add(sun);
+    
     console.log("Plantes added to the scene");
     
-    spotLight = new SpotLight(0xffffff,5,500);
+    spotLight = new SpotLight(0xffffff,1,500,90,0,0);
     spotLight.position.set(0, 0, -90);
     spotLight.castShadow = true;
     spotLight.target = planet5;
     sun.add(spotLight);
         
     // add controls
-    defaultColor = "#000000";
     gui = new GUI();    
-    control = new Control(defaultColor, group);
+    control = new Control();
     addControl(control);
 
     // Add framerate stats
@@ -159,7 +165,6 @@ function init() {
     
     window.addEventListener('resize', onResize, false);
     window.addEventListener( 'mousewheel', mousewheel, false );
-    //this.domElement.addEventListener( 'mousewheel', mousewheel, false );
 }
 
 
@@ -183,34 +188,11 @@ function onResize(): void {
 
 function addControl(controlObject: Control): void {
     
-    /*
     // Add Rotation Controls
-    gui.add(controlObject,'rotationX',0, 1);
-    gui.add(controlObject,'rotationY',0, 1);
-    gui.add(controlObject,'rotationZ',0, 1);
-    gui.add(controlObject,'resetPosition');
+    gui.add(controlObject,'zoomInOut',-500, -100);
+    gui.add(controlObject,'moveLeftRight',-300, 300);
+    gui.add(controlObject,'resetCamera');
     
-    //Controls used to change the colors
-    gui.addColor(controlObject,'feetColor').onChange((color) =>{
-       leftFoot.material.color = new Color(color);
-       rightFoot.material.color = new Color(color);
-   });
-    gui.addColor(controlObject,'legsColor').onChange((color) =>{
-       leftLeg.material.color = new Color(color);
-       rightLeg.material.color = new Color(color);
-   });
-    gui.addColor(controlObject,'armsColor').onChange((color) =>{
-       leftArm.material.color = new Color(color);
-       rightArm.material.color = new Color(color);
-   });
-    gui.addColor(controlObject,'torsoColor').onChange((color) =>{
-       torso.material.color = new Color(color);
-   });
-    gui.addColor(controlObject,'headColor').onChange((color) =>{
-       head.material.color = new Color(color);
-   });
-   */
-     
 }
 
 // Add Stats Object to the Scene
@@ -228,13 +210,65 @@ function gameLoop(): void {
     stats.update();
     // render using requestAnimationFrame
     requestAnimationFrame(gameLoop);
-    planet3.rotation.y += 0.005;
-    //sun.rotation.y += 0.01
-
-	
+    
+    camera.position.x = control.zoomInOut;
+    camera.position.z = control.moveLeftRight;
+    
+    rotatePlanets();
+    movePlanets();    
+	    
     // render the scene
     renderer.render(scene, camera);
 }
+
+ function rotatePlanets(): void {
+    
+    planet1.rotation.y += 0.005;
+    planet1.rotation.x += 0.05;
+    
+    planet2.rotation.y += 0.1;
+    
+    planet3.rotation.y += 0.005;
+    
+    planet4.rotation.x += 0.05;
+    
+    planet5.rotation.y += 0.05;
+    planet5.rotation.x += 0.015;
+    planet5.rotation.z += 0.025;
+    
+ }
+
+ function movePlanets(): void {
+    
+    var distanceFromSun: number;
+    
+    //watch?v=-86Ii85PSL8 rotate using sin cos
+    
+    //for planet 1
+    distanceFromSun = 100;
+    speedRotation1 += .003;
+    planet1.position.set((sun.position.x + Math.cos(speedRotation1))*(distanceFromSun*.5), 0, (sun.position.y + Math.sin(speedRotation1)) * distanceFromSun);
+    
+    //for planet 2
+    distanceFromSun = 250;
+    speedRotation2 += .007;
+    planet2.position.set((sun.position.x + Math.cos(speedRotation2))*(distanceFromSun*.5), 0, (sun.position.y + Math.sin(speedRotation2)) * distanceFromSun);
+    
+    //for planet 3
+    distanceFromSun = 400;
+    speedRotation3 += .01;
+    planet3.position.set((sun.position.x + Math.cos(speedRotation3))*(distanceFromSun*.5), 0, (sun.position.y + Math.sin(speedRotation3)) * distanceFromSun);
+    
+    //for planet 4
+    distanceFromSun = 590;
+    speedRotation4 += .001;
+    planet4.position.set((sun.position.x + Math.cos(speedRotation4))*(distanceFromSun*.5), 0, (sun.position.y + Math.sin(speedRotation4)) * distanceFromSun);
+    
+    //for planet 5   
+    distanceFromSun = 800;
+    speedRotation5 += .005;
+    planet5.position.set((sun.position.x + Math.cos(speedRotation5))*(distanceFromSun*.5), 0, (sun.position.y + Math.sin(speedRotation5)) * distanceFromSun);
+ }
 
 // Setup default renderer
 function setupRenderer(): void {
@@ -247,10 +281,10 @@ function setupRenderer(): void {
 
 // Setup main camera for the scene
 function setupCamera(): void {
-    camera = new PerspectiveCamera(85, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.x = -400;
-    camera.position.y = 60;
-    camera.position.z = 10;
+    camera = new PerspectiveCamera(100, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.x = -500;
+    camera.position.y = 0;
+    camera.position.z = 0;
     camera.lookAt(scene.position);
     console.log("Finished setting up Camera...");
 }
