@@ -19,6 +19,7 @@ Revision:
 var Scene = THREE.Scene;
 var Renderer = THREE.WebGLRenderer;
 var PerspectiveCamera = THREE.PerspectiveCamera;
+var SphereGeometry = THREE.SphereGeometry;
 var LambertMaterial = THREE.MeshLambertMaterial;
 var SpotLight = THREE.SpotLight;
 var AmbientLight = THREE.AmbientLight;
@@ -44,14 +45,13 @@ var step = 0;
 var cubeMaterial;
 var cubeGeometry;
 //BODY PARTS
-var head;
-var torso;
-var leftArm;
-var rightArm;
-var leftLeg;
-var rightLeg;
-var leftFoot;
-var rightFoot;
+var sun;
+var planet1;
+var planet2;
+var planet3;
+var planet3moon;
+var planet4;
+var planet5;
 var group;
 var defaultColor;
 function init() {
@@ -86,34 +86,31 @@ function init() {
     spotLight = new SpotLight(0xffffff);
     spotLight.position.set(-40, 60, 20);
     spotLight.castShadow = true;
-    scene.add(spotLight);
+    //scene.add(spotLight);
     console.log("Added a SpotLight Light to Scene");
     // Add objects to the scene
     //length, height, width - color - front/back, up/down, left/rigth
-    //head = new gameObject(new SphereGeometry(4, 3, 4), new LambertMaterial({color: 0xffcc99}), 0, 14, 0);
-    head = new THREE.Mesh(new THREE.SphereGeometry(15, 30, 30), new LambertMaterial({ color: 0xffcc99 }));
-    scene.add(head);
-    /*torso = new gameObject(new CubeGeometry(4, 6, 7), new LambertMaterial({color: 0xff6666}), 0, 9, 0);
-    rightLeg = new gameObject(new CubeGeometry(2, 6, 1), new LambertMaterial({color: 0x6666ff}), 0, 3, 2);
-    leftLeg = new gameObject(new CubeGeometry(2, 6, 1), new LambertMaterial({color: 0x6666ff}), 0, 3, -2);
-    rightFoot = new gameObject(new CubeGeometry(3, 2, 1), new LambertMaterial({color: 0x000000}), -2, 1, 2);
-    leftFoot = new gameObject(new CubeGeometry(3, 2, 1), new LambertMaterial({color: 0x000000}), -2, 1, -2);
-    rightArm = new gameObject(new CubeGeometry(2, 1, 5), new LambertMaterial({color: 0xffcccc}), 0, 10.5, 6.3);
-    leftArm = new gameObject(new CubeGeometry(2, 1, 5), new LambertMaterial({color: 0xffcccc}), 0, 10.5, -6.3);
-    console.log("Cubeman parts created");
-    
-    group = new THREE.Object3D();
-    group.add(head);
-    group.add(torso);
-    group.add(leftArm);
-    group.add(rightArm);
-    group.add(leftLeg);
-    group.add(rightLeg);
-    //Feet added for bonus mark :)
-    group.add(leftFoot);
-    group.add(rightFoot);
-    scene.add(group);
-    console.log("Cubeman added to the scene");*/
+    sun = new gameObject(new SphereGeometry(30, 30, 30), new LambertMaterial({ color: 0xFFFF00 }), 0, 0, 300);
+    planet1 = new gameObject(new SphereGeometry(8, 30, 30), new LambertMaterial({ color: 0x123123 }), 0, 0, -120);
+    planet2 = new gameObject(new SphereGeometry(19, 30, 30), new LambertMaterial({ color: 0x321321 }), 0, 70, -180);
+    planet3 = new gameObject(new SphereGeometry(15, 30, 30), new LambertMaterial({ color: 0xff6666 }), 0, 0, -330);
+    planet3.rotation.x = .7;
+    planet3moon = new gameObject(new SphereGeometry(8, 20, 20), new LambertMaterial({ color: 0xff66ff }), 0, 0, 45);
+    planet3.add(planet3moon);
+    planet4 = new gameObject(new SphereGeometry(23, 30, 30), new LambertMaterial({ color: 0xff6666 }), 0, 0, -430);
+    planet5 = new gameObject(new SphereGeometry(29, 30, 30), new LambertMaterial({ color: 0xff6666 }), 0, -40, -600);
+    sun.add(planet1);
+    sun.add(planet2);
+    sun.add(planet3);
+    sun.add(planet4);
+    sun.add(planet5);
+    scene.add(sun);
+    console.log("Plantes added to the scene");
+    spotLight = new SpotLight(0xffffff, 5, 500);
+    spotLight.position.set(0, 0, -90);
+    spotLight.castShadow = true;
+    spotLight.target = planet5;
+    sun.add(spotLight);
     // add controls
     defaultColor = "#000000";
     gui = new GUI();
@@ -134,15 +131,7 @@ function mousewheel(e) {
     e.stopPropagation();
     var delta = 0;
     delta = e.wheelDelta * .02;
-    console.log(delta);
-    //camera.position.y += 10;
-    //if (camera.position.x <= -11)
     camera.position.x += delta;
-    console.log(camera.position.x);
-    //camera.x += 10;
-    //_zoomStart = _zoomEnd = _this.getMouseOnScreen( event.clientX, event.clientY );
-    //document.addEventListener( 'mousemove', mousemove, false );
-    //document.addEventListener( 'mouseup', mouseup, false );
 }
 // Change the Camera Aspect Ration according to Screen Size changes
 function onResize() {
@@ -191,32 +180,27 @@ function addStatsObject() {
 // Setup main game loop
 function gameLoop() {
     stats.update();
-    //group.rotation.set(control.rotationX, control.rotationY, control.rotationZ);
-    /*
-    group.rotation.x += control.rotationX;
-    group.rotation.y += control.rotationY;
-    group.rotation.z += control.rotationZ;
-    */
     // render using requestAnimationFrame
     requestAnimationFrame(gameLoop);
+    planet3.rotation.y += 0.005;
+    //sun.rotation.y += 0.01
     // render the scene
     renderer.render(scene, camera);
 }
 // Setup default renderer
 function setupRenderer() {
     renderer = new Renderer();
-    renderer.setClearColor(0x000000, 1.0);
+    renderer.setClearColor(0xffffff, 1.0);
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.shadowMap.enabled = true;
     console.log("Finished setting up Renderer... black bg screen");
 }
 // Setup main camera for the scene
 function setupCamera() {
-    //camera = new PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera = new PerspectiveCamera(85, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.x = -40;
-    camera.position.y = 20;
-    camera.position.z = 0;
+    camera.position.x = -400;
+    camera.position.y = 60;
+    camera.position.z = 10;
     camera.lookAt(scene.position);
     console.log("Finished setting up Camera...");
 }
