@@ -42,6 +42,7 @@ import Color = THREE.Color;
 import Vector3 = THREE.Vector3;
 import Face3 = THREE.Face3;
 import Point = objects.Point;
+import TextureLoader = THREE.TextureLoader;
 
 //Custom Game Objects
 import gameObject = objects.gameObject;
@@ -94,20 +95,7 @@ function init() {
     scene.add(axes);
     console.log("Added Axis Helper to scene...");
     
-    //Add a Plane to the Scene
-    /*
-    plane = new gameObject(
-        new PlaneGeometry(40, 80, 1, 1),
-        new LambertMaterial({ color: 0xffffff }),
-        0, 0, 0);
-
-    plane.rotation.x = -0.5 * Math.PI;
-
-    scene.add(plane);
-    console.log("Added Plane Primitive to scene...");
-    */
-     
-    // Add an AmbientLight to the scene
+     // Add an AmbientLight to the scene
     ambientLight = new AmbientLight(0x090909);
     scene.add(ambientLight);
     console.log("Added an Ambient Light to Scene");
@@ -121,18 +109,18 @@ function init() {
     
     // Add objects to the scene
     //length, height, width - color - front/back, up/down, left/rigth
-    sun = new gameObject(new SphereGeometry(30, 30, 30), new LambertMaterial({color: 0xFFFF00}), 0, 0, 0);
+    sun = new gameObject(new SphereGeometry(30, 30, 30), new LambertMaterial({map: THREE.ImageUtils.loadTexture('../../Content/Images/sun.jpg')}), 0, 0, 0);
     sun.receiveShadow = false;
     sun.castShadow = false;
     
-    planet1 = new gameObject(new SphereGeometry(8, 30, 30), new LambertMaterial({color: 0x123123}), 0, 0, 0);
-    planet2 = new gameObject(new SphereGeometry(19, 30, 30), new LambertMaterial({color: 0x321321}), 0, 0, 0);
+    planet1 = new gameObject(new SphereGeometry(8, 30, 30), new LambertMaterial({map: THREE.ImageUtils.loadTexture('../../Content/Images/planet1.jpg')}), 0, 0, 0);
+    planet2 = new gameObject(new SphereGeometry(19, 30, 30), new LambertMaterial({map: THREE.ImageUtils.loadTexture('../../Content/Images/planet2.jpg')}), 0, 0, 0);
     
-    planet3 = new gameObject(new SphereGeometry(15, 30, 30), new LambertMaterial({color: 0xff6666}), 0, 0, 0);
+    planet3 = new gameObject(new SphereGeometry(15, 30, 30), new LambertMaterial({map: THREE.ImageUtils.loadTexture('../../Content/Images/planet3.jpg')}), 0, 0, 0);
     planet3.rotation.x = .7;
-    planet3moon = new gameObject(new SphereGeometry(8, 20, 20), new LambertMaterial({color: 0xff66ff}), 0, 0, 45);
-    planet4 = new gameObject(new SphereGeometry(23, 30, 30), new LambertMaterial({color: 0xff6666}), 0, 0, 0);
-    planet5 = new gameObject(new SphereGeometry(29, 30, 30), new LambertMaterial({color: 0xff6666}), 0, 0, 0);
+    planet3moon = new gameObject(new SphereGeometry(8, 20, 20), new LambertMaterial({map: THREE.ImageUtils.loadTexture('../../Content/Images/moon1.jpg')}), 0, 0, 45);
+    planet4 = new gameObject(new SphereGeometry(23, 30, 30), new LambertMaterial({map: THREE.ImageUtils.loadTexture('../../Content/Images/planet4.png')}), 0, 0, 0);
+    planet5 = new gameObject(new SphereGeometry(29, 30, 30), new LambertMaterial({map: THREE.ImageUtils.loadTexture('../../Content/Images/planet5.jpg')}), 0, 0, 0);
     
     planet3.add(planet3moon);
     

@@ -2,14 +2,12 @@
 /*
 Author: Douglas Krein
 Last Modified by: Douglas Krein
-Last Modified: 03-02-2016
+Last Modified: 19-02-2016
 File description:
-- Controls the variables of GUI for rotation and colors in the cubeman.
+- Controls the variables of GUI for zoomInOut, moveLeftRight and resetCamera
 
 Revision:
-1 - added variables for rotation
-2 - set default rotation as zero
-3 - added cubeman parts colors
+1 - added variables for zoom and position
 */
 var objects;
 (function (objects) {
