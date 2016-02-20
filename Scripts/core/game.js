@@ -53,6 +53,8 @@ var planet3;
 var planet3moon;
 var planet4;
 var planet5;
+var planet5moon;
+var planet5moonMoon;
 var planetTest;
 var speedRotation1 = 0;
 var speedRotation2 = 0;
@@ -71,15 +73,9 @@ function init() {
     scene.add(axes);
     console.log("Added Axis Helper to scene...");
     // Add an AmbientLight to the scene
-    ambientLight = new AmbientLight(0x090909);
+    ambientLight = new AmbientLight(0x664200);
     scene.add(ambientLight);
     console.log("Added an Ambient Light to Scene");
-    // Add a SpotLight to the scene
-    spotLight = new SpotLight(0xffffff);
-    spotLight.position.set(-40, 60, 20);
-    spotLight.castShadow = true;
-    //scene.add(spotLight);
-    console.log("Added a SpotLight Light to Scene");
     // Add objects to the scene
     //length, height, width - color - front/back, up/down, left/rigth
     sun = new gameObject(new SphereGeometry(30, 30, 30), new LambertMaterial({ map: ImageUtils.loadTexture('../../Content/Images/sun.jpg') }), 0, 0, 0);
@@ -92,8 +88,11 @@ function init() {
     planet3moon = new gameObject(new SphereGeometry(8, 20, 20), new LambertMaterial({ map: ImageUtils.loadTexture('../../Content/Images/moon1.jpg') }), 0, 0, 45);
     planet4 = new gameObject(new SphereGeometry(23, 30, 30), new LambertMaterial({ map: ImageUtils.loadTexture('../../Content/Images/planet4.png') }), 0, 0, 0);
     planet5 = new gameObject(new SphereGeometry(29, 30, 30), new LambertMaterial({ map: ImageUtils.loadTexture('../../Content/Images/planet5.jpg') }), 0, 0, 0);
-    planetTest = new gameObject(new SphereGeometry(8, 30, 30), new LambertMaterial({ map: ImageUtils.loadTexture('../../Content/Images/planet1.jpg') }), 0, 0, 0);
+    planet5moon = new gameObject(new SphereGeometry(6, 20, 20), new LambertMaterial({ map: ImageUtils.loadTexture('../../Content/Images/moon2.jpg') }), 0, 0, 55);
+    planet5moonMoon = new gameObject(new SphereGeometry(3, 20, 20), new LambertMaterial({ map: ImageUtils.loadTexture('../../Content/Images/moon3.jpg') }), 0, 0, 18);
     planet3.add(planet3moon);
+    planet5moon.add(planet5moonMoon);
+    planet5.add(planet5moon);
     scene.add(planet1);
     scene.add(planet2);
     scene.add(planet3);
@@ -107,28 +106,35 @@ function init() {
     spotLight.position.set(-70, 0, 0);
     spotLight.castShadow = true;
     spotLight.target = sun;
-    //spotLight.add(planetTest);
     scene.add(spotLight);
-    spotLight = new SpotLight(0xffffff, .2, 500, 180, 40, 0);
+    console.log("Added a SpotLight Light 360 to Scene");
+    //lights for the sun
+    spotLight = new SpotLight(0xffffff, 3, 60, 120, 0, 0);
+    spotLight.position.set(-60, 0, 0);
+    spotLight.castShadow = true;
+    spotLight.target = sun;
+    scene.add(spotLight);
+    spotLight = new SpotLight(0xffffff, 3, 60, 120, 0, 0);
     spotLight.position.set(0, 0, -60);
     spotLight.castShadow = true;
     spotLight.target = sun;
     scene.add(spotLight);
-    spotLight = new SpotLight(0xffffff, .2, 500, 180, 40, 0);
+    spotLight = new SpotLight(0xffffff, 3, 60, 120, 0, 0);
     spotLight.position.set(0, 0, 60);
     spotLight.castShadow = true;
     spotLight.target = sun;
     scene.add(spotLight);
-    spotLight = new SpotLight(0xffffff, .2, 50, 180, 40, 0);
+    spotLight = new SpotLight(0xffffff, 3, 60, 120, 0, 0);
     spotLight.position.set(0, -60, 0);
     spotLight.castShadow = true;
     spotLight.target = sun;
     scene.add(spotLight);
-    spotLight = new SpotLight(0xffffff, .2, 50, 180, 40, 0);
+    spotLight = new SpotLight(0xffffff, 3, 60, 120, 0, 0);
     spotLight.position.set(0, 60, 0);
     spotLight.castShadow = true;
     spotLight.target = sun;
     scene.add(spotLight);
+    console.log("Added a Sun's SpotLight to Scene");
     // add controls
     gui = new GUI();
     control = new Control();
@@ -191,11 +197,14 @@ function rotatePlanets() {
     planet2.rotation.y += 0.1;
     planet3.rotation.y += 0.005;
     planet4.rotation.x += 0.05;
-    planet5.rotation.y += 0.05;
-    planet5.rotation.x += 0.015;
-    planet5.rotation.z += 0.025;
+    planet5.rotation.y += 0.005;
+    planet5.rotation.x += 0.0015;
+    planet5.rotation.z += 0.0025;
     planet3moon.rotation.y += 0.002;
     planet3moon.rotation.z += 0.008;
+    planet5moon.rotation.y += 0.1;
+    planet5moon.rotation.z += 0.05;
+    planet5moonMoon.rotation.x += 0.01;
 }
 function movePlanets() {
     var distanceFromSun;

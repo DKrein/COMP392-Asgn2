@@ -16,7 +16,7 @@ var objects;
         // CONSTRUCTOR ++++++++++++++++++++++++++++++++++++++++
         function Control(camera) {
             //PUBLIC INSTANCE VARIABLES +++++++++++++++++++++++++++
-            this.zoomInOut = -200;
+            this.zoomInOut = -400;
             this.moveLeftRight = 0;
             this.camera = camera;
         }
