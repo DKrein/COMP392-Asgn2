@@ -10,12 +10,11 @@ File description:
 - Controls the general game information, like creationg of cubeman and controls.
 
 Revision:
-1 - camera modified
-2 - cube parts added
-3 - colors changed
-4 - code changed to create cubes in one line
-5 - added control to rotate the cube man
-6 - added control to change the colors
+1 - planets created
+2 - distance and position adjusted
+3 - planets movment adjusted
+4 - zommInOut and moveLeftRight added to controlles
+5 - textures added
 */
 
 // THREEJS Aliases
@@ -42,7 +41,7 @@ import Color = THREE.Color;
 import Vector3 = THREE.Vector3;
 import Face3 = THREE.Face3;
 import Point = objects.Point;
-import TextureLoader = THREE.TextureLoader;
+import ImageUtils = THREE.ImageUtils;
 
 //Custom Game Objects
 import gameObject = objects.gameObject;
@@ -71,7 +70,8 @@ var planet3: Mesh;
 var planet3moon: Mesh;
 var planet4: Mesh;
 var planet5: Mesh;
-var group: Mesh;
+
+var planetTest: Mesh;
 
 var speedRotation1: number = 0;
 var speedRotation2: number = 0;
@@ -109,18 +109,21 @@ function init() {
     
     // Add objects to the scene
     //length, height, width - color - front/back, up/down, left/rigth
-    sun = new gameObject(new SphereGeometry(30, 30, 30), new LambertMaterial({map: THREE.ImageUtils.loadTexture('../../Content/Images/sun.jpg')}), 0, 0, 0);
+    sun = new gameObject(new SphereGeometry(30, 30, 30), new LambertMaterial({map: ImageUtils.loadTexture('../../Content/Images/sun.jpg')}), 0, 0, 0);
     sun.receiveShadow = false;
     sun.castShadow = false;
     
-    planet1 = new gameObject(new SphereGeometry(8, 30, 30), new LambertMaterial({map: THREE.ImageUtils.loadTexture('../../Content/Images/planet1.jpg')}), 0, 0, 0);
-    planet2 = new gameObject(new SphereGeometry(19, 30, 30), new LambertMaterial({map: THREE.ImageUtils.loadTexture('../../Content/Images/planet2.jpg')}), 0, 0, 0);
+    planet1 = new gameObject(new SphereGeometry(8, 30, 30), new LambertMaterial({map: ImageUtils.loadTexture('../../Content/Images/planet1.jpg')}), 0, 0, 0);
+    planet2 = new gameObject(new SphereGeometry(19, 30, 30), new LambertMaterial({map: ImageUtils.loadTexture('../../Content/Images/planet2.jpg')}), 0, 0, 0);
     
-    planet3 = new gameObject(new SphereGeometry(15, 30, 30), new LambertMaterial({map: THREE.ImageUtils.loadTexture('../../Content/Images/planet3.jpg')}), 0, 0, 0);
+    planet3 = new gameObject(new SphereGeometry(15, 30, 30), new LambertMaterial({map: ImageUtils.loadTexture('../../Content/Images/planet3.jpg')}), 0, 0, 0);
     planet3.rotation.x = .7;
-    planet3moon = new gameObject(new SphereGeometry(8, 20, 20), new LambertMaterial({map: THREE.ImageUtils.loadTexture('../../Content/Images/moon1.jpg')}), 0, 0, 45);
-    planet4 = new gameObject(new SphereGeometry(23, 30, 30), new LambertMaterial({map: THREE.ImageUtils.loadTexture('../../Content/Images/planet4.png')}), 0, 0, 0);
-    planet5 = new gameObject(new SphereGeometry(29, 30, 30), new LambertMaterial({map: THREE.ImageUtils.loadTexture('../../Content/Images/planet5.jpg')}), 0, 0, 0);
+    planet3moon = new gameObject(new SphereGeometry(8, 20, 20), new LambertMaterial({map: ImageUtils.loadTexture('../../Content/Images/moon1.jpg')}), 0, 0, 45);
+    planet4 = new gameObject(new SphereGeometry(23, 30, 30), new LambertMaterial({map: ImageUtils.loadTexture('../../Content/Images/planet4.png')}), 0, 0, 0);
+    planet5 = new gameObject(new SphereGeometry(29, 30, 30), new LambertMaterial({map: ImageUtils.loadTexture('../../Content/Images/planet5.jpg')}), 0, 0, 0);
+    
+    
+    planetTest = new gameObject(new SphereGeometry(8, 30, 30), new LambertMaterial({map: ImageUtils.loadTexture('../../Content/Images/planet1.jpg')}), 0, 0, 0);
     
     planet3.add(planet3moon);
     
@@ -133,11 +136,39 @@ function init() {
     
     console.log("Plantes added to the scene");
     
-    spotLight = new SpotLight(0xffffff,1,500,90,0,0);
-    spotLight.position.set(0, 0, -90);
+    //here we set all the lights...
+    //light for the sun
+    spotLight = new SpotLight(0xffffff,.7,500,360,0,0);
+    spotLight.position.set(-70, 0, 0);
     spotLight.castShadow = true;
-    spotLight.target = planet5;
-    sun.add(spotLight);
+    spotLight.target = sun;
+    //spotLight.add(planetTest);
+    scene.add(spotLight);
+    
+    spotLight = new SpotLight(0xffffff,.2,500,180,40,0);
+    spotLight.position.set(0, 0, -60);
+    spotLight.castShadow = true;
+    spotLight.target = sun;
+    scene.add(spotLight);
+    
+    spotLight = new SpotLight(0xffffff,.2,500,180,40,0);
+    spotLight.position.set(0, 0, 60);
+    spotLight.castShadow = true;
+    spotLight.target = sun;
+    scene.add(spotLight);
+    
+    spotLight = new SpotLight(0xffffff,.2,50,180,40,0);
+    spotLight.position.set(0, -60, 0);
+    spotLight.castShadow = true;
+    spotLight.target = sun;
+    scene.add(spotLight);
+    
+    spotLight = new SpotLight(0xffffff,.2,50,180,40,0);
+    spotLight.position.set(0, 60, 0);
+    spotLight.castShadow = true;
+    spotLight.target = sun;
+    scene.add(spotLight);
+
         
     // add controls
     gui = new GUI();    
@@ -158,7 +189,7 @@ function init() {
 
 function mousewheel(e) : void {
         //http://www.javascriptkit.com/javatutors/onmousewheel.shtml
-        
+        //not working, controlls take care about camera zoom
 		e.preventDefault();
 		e.stopPropagation();
         var delta: number = 0;
@@ -211,6 +242,9 @@ function gameLoop(): void {
 
  function rotatePlanets(): void {
     
+    sun.rotation.x += 0.001;
+    sun.rotation.y += 0.0005;
+    
     planet1.rotation.y += 0.005;
     planet1.rotation.x += 0.05;
     
@@ -223,6 +257,9 @@ function gameLoop(): void {
     planet5.rotation.y += 0.05;
     planet5.rotation.x += 0.015;
     planet5.rotation.z += 0.025;
+    
+    planet3moon.rotation.y += 0.002;
+    planet3moon.rotation.z += 0.008;
     
  }
 
@@ -261,7 +298,7 @@ function gameLoop(): void {
 // Setup default renderer
 function setupRenderer(): void {
     renderer = new Renderer();
-    renderer.setClearColor(0xffffff, 1.0);
+    renderer.setClearColor(0x000000, 1.0);
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.shadowMap.enabled = true;
     console.log("Finished setting up Renderer... black bg screen");

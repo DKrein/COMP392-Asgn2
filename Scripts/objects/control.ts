@@ -15,7 +15,7 @@ module objects {
     // CONTROL CLASS ++++++++++++++++++++++++++++++++++++++++++
     export class Control { 
         //PUBLIC INSTANCE VARIABLES +++++++++++++++++++++++++++
-        public zoomInOut: number = -500;
+        public zoomInOut: number = -400;
         public moveLeftRight: number = 0;
         public camera: Object;
         
