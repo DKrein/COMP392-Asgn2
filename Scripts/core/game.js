@@ -15,6 +15,7 @@ Revision:
 5 - textures added
 6 - lighting fixed
 7 - added more moons
+8 - added a plane with a space texture to the background
 */
 // THREEJS Aliases
 var Scene = THREE.Scene;
@@ -88,8 +89,6 @@ function init() {
     // Add objects to the scene
     //length, height, width - color - front/back, up/down, left/rigth
     sun = new gameObject(new SphereGeometry(30, 30, 30), new LambertMaterial({ map: ImageUtils.loadTexture('../../Content/Images/sun.jpg') }), 0, 0, 0);
-    sun.receiveShadow = false;
-    sun.castShadow = false;
     planet1 = new gameObject(new SphereGeometry(8, 30, 30), new LambertMaterial({ map: ImageUtils.loadTexture('../../Content/Images/planet1.jpg') }), 0, 0, 0);
     planet2 = new gameObject(new SphereGeometry(19, 30, 30), new LambertMaterial({ map: ImageUtils.loadTexture('../../Content/Images/planet2.jpg') }), 0, 0, 0);
     planet3 = new gameObject(new SphereGeometry(15, 30, 30), new LambertMaterial({ map: ImageUtils.loadTexture('../../Content/Images/planet3.jpg') }), 0, 0, 0);
@@ -172,9 +171,12 @@ function onResize() {
 }
 function addControl(controlObject) {
     // Add Rotation Controls
-    gui.add(controlObject, 'zoomInOut', -500, -100);
-    gui.add(controlObject, 'moveLeftRight', -300, 300);
     gui.add(controlObject, 'resetCamera');
+    gui.add(controlObject, 'zoomPlanet1');
+    gui.add(controlObject, 'zoomPlanet2');
+    gui.add(controlObject, 'zoomPlanet3');
+    gui.add(controlObject, 'zoomPlanet4');
+    gui.add(controlObject, 'zoomPlanet5');
 }
 // Add Stats Object to the Scene
 function addStatsObject() {
@@ -190,8 +192,7 @@ function gameLoop() {
     stats.update();
     // render using requestAnimationFrame
     requestAnimationFrame(gameLoop);
-    camera.position.x = control.zoomInOut;
-    camera.position.z = control.moveLeftRight;
+    control.keepZoom();
     rotatePlanets();
     movePlanets();
     // render the scene
@@ -252,6 +253,7 @@ function setupCamera() {
     camera.position.x = -500;
     camera.position.y = 0;
     camera.position.z = 0;
+    camera.rotation.x = -45;
     camera.lookAt(scene.position);
     console.log("Finished setting up Camera...");
 }

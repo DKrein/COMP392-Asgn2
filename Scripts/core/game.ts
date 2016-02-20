@@ -17,6 +17,7 @@ Revision:
 5 - textures added
 6 - lighting fixed
 7 - added more moons
+8 - added a plane with a space texture to the background
 */
 
 // THREEJS Aliases
@@ -102,7 +103,7 @@ function init() {
     //Add a Plane to the Scene
     plane = new gameObject(
         new PlaneGeometry(6000, 3000, 1, 1),
-        new LambertMaterial({map: ImageUtils.loadTexture('../../Content/Images/space.jpg')),
+        new LambertMaterial({map: ImageUtils.loadTexture('../../Content/Images/space.jpg')}),
         500, 0, 0);
     plane.receiveShadow = false;
     plane.rotation.y = -0.5 * Math.PI;
@@ -118,8 +119,6 @@ function init() {
     // Add objects to the scene
     //length, height, width - color - front/back, up/down, left/rigth
     sun = new gameObject(new SphereGeometry(30, 30, 30), new LambertMaterial({map: ImageUtils.loadTexture('../../Content/Images/sun.jpg')}), 0, 0, 0);
-    sun.receiveShadow = false;
-    sun.castShadow = false;
     
     planet1 = new gameObject(new SphereGeometry(8, 30, 30), new LambertMaterial({map: ImageUtils.loadTexture('../../Content/Images/planet1.jpg')}), 0, 0, 0);
     planet2 = new gameObject(new SphereGeometry(19, 30, 30), new LambertMaterial({map: ImageUtils.loadTexture('../../Content/Images/planet2.jpg')}), 0, 0, 0);
@@ -154,8 +153,7 @@ function init() {
     spotLight.target = sun;
     scene.add(spotLight);
     console.log("Added a SpotLight Light 360 to Scene");
-    
-    
+
     //lights for the sun
     spotLight = new SpotLight(0xffffff,3,60,120,0,0);
     spotLight.position.set(-60, 0, 0);
@@ -187,9 +185,7 @@ function init() {
     spotLight.target = sun;
     scene.add(spotLight);
     console.log("Added a Sun's SpotLight to Scene");
-    
-
-        
+       
     // add controls
     gui = new GUI();    
     control = new Control();
@@ -228,10 +224,12 @@ function onResize(): void {
 function addControl(controlObject: Control): void {
     
     // Add Rotation Controls
-    gui.add(controlObject,'zoomInOut',-500, -100);
-    gui.add(controlObject,'moveLeftRight',-300, 300);
     gui.add(controlObject,'resetCamera');
-    
+    gui.add(controlObject,'zoomPlanet1');
+    gui.add(controlObject,'zoomPlanet2');
+    gui.add(controlObject,'zoomPlanet3');
+    gui.add(controlObject,'zoomPlanet4');
+    gui.add(controlObject,'zoomPlanet5');
 }
 
 // Add Stats Object to the Scene
@@ -250,9 +248,7 @@ function gameLoop(): void {
     // render using requestAnimationFrame
     requestAnimationFrame(gameLoop);
     
-    camera.position.x = control.zoomInOut;
-    camera.position.z = control.moveLeftRight;
-    
+    control.keepZoom();
     rotatePlanets();
     movePlanets();    
 	    
@@ -333,6 +329,7 @@ function setupCamera(): void {
     camera.position.x = -500;
     camera.position.y = 0;
     camera.position.z = 0;
+    camera.rotation.x = -45;
     camera.lookAt(scene.position);
     console.log("Finished setting up Camera...");
 }
