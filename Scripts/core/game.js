@@ -5,7 +5,7 @@ Author: Douglas Krein
 Last Modified by: Douglas Krein
 Last Modified: 03-02-2016
 File description:
-- Controls the general game information, like creationg of cubeman and controls.
+- Controls the general game information, like creationg of solar system and controls.
 
 Revision:
 1 - planets created
@@ -13,11 +13,14 @@ Revision:
 3 - planets movment adjusted
 4 - zommInOut and moveLeftRight added to controlles
 5 - textures added
+6 - lighting fixed
+7 - added more moons
 */
 // THREEJS Aliases
 var Scene = THREE.Scene;
 var Renderer = THREE.WebGLRenderer;
 var PerspectiveCamera = THREE.PerspectiveCamera;
+var PlaneGeometry = THREE.PlaneGeometry;
 var SphereGeometry = THREE.SphereGeometry;
 var AxisHelper = THREE.AxisHelper;
 var LambertMaterial = THREE.MeshLambertMaterial;
@@ -72,6 +75,12 @@ function init() {
     axes = new AxisHelper(80);
     scene.add(axes);
     console.log("Added Axis Helper to scene...");
+    //Add a Plane to the Scene
+    plane = new gameObject(new PlaneGeometry(6000, 3000, 1, 1), new LambertMaterial({ map: ImageUtils.loadTexture('../../Content/Images/space.jpg') }), 500, 0, 0);
+    plane.receiveShadow = false;
+    plane.rotation.y = -0.5 * Math.PI;
+    scene.add(plane);
+    console.log("Added Plane Primitive to scene...");
     // Add an AmbientLight to the scene
     ambientLight = new AmbientLight(0x664200);
     scene.add(ambientLight);
@@ -84,7 +93,6 @@ function init() {
     planet1 = new gameObject(new SphereGeometry(8, 30, 30), new LambertMaterial({ map: ImageUtils.loadTexture('../../Content/Images/planet1.jpg') }), 0, 0, 0);
     planet2 = new gameObject(new SphereGeometry(19, 30, 30), new LambertMaterial({ map: ImageUtils.loadTexture('../../Content/Images/planet2.jpg') }), 0, 0, 0);
     planet3 = new gameObject(new SphereGeometry(15, 30, 30), new LambertMaterial({ map: ImageUtils.loadTexture('../../Content/Images/planet3.jpg') }), 0, 0, 0);
-    planet3.rotation.x = .7;
     planet3moon = new gameObject(new SphereGeometry(8, 20, 20), new LambertMaterial({ map: ImageUtils.loadTexture('../../Content/Images/moon1.jpg') }), 0, 0, 45);
     planet4 = new gameObject(new SphereGeometry(23, 30, 30), new LambertMaterial({ map: ImageUtils.loadTexture('../../Content/Images/planet4.png') }), 0, 0, 0);
     planet5 = new gameObject(new SphereGeometry(29, 30, 30), new LambertMaterial({ map: ImageUtils.loadTexture('../../Content/Images/planet5.jpg') }), 0, 0, 0);
@@ -233,7 +241,7 @@ function movePlanets() {
 // Setup default renderer
 function setupRenderer() {
     renderer = new Renderer();
-    renderer.setClearColor(0x000000, 1.0);
+    renderer.setClearColor(0xffffff, 1.0);
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.shadowMap.enabled = true;
     console.log("Finished setting up Renderer... black bg screen");
